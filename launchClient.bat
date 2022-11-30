@@ -1,1 +1,0 @@
-java -Dfile.encoding=UTF-8 -classpath C:\Users\hphel\Desktop\usr\code\arcticwolf-assignment\out\production\arcticwolf-assignment Client.ClientApplication config/client.properties
