@@ -9,13 +9,13 @@ import java.util.Properties;
 /**
  * Responsible for reading in raw configuration file and converting to usable Properties object
  *
- * @Author Howard Pearce
+ * @author Howard Pearce
  */
 public class ConfigLoader {
     /**
      * File location of config as String
      */
-    private String m_filepath = null;
+    private String m_filepath;
 
     /**
      * Create a ConfigLoader instance. Should be one per config file

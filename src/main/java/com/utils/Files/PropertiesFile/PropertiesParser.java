@@ -14,7 +14,7 @@ public class PropertiesParser {
     /**
      * file that we will be parsing
      */
-    public File m_inputFile = null;
+    public File m_inputFile;
 
     /**
      * Create a PropertiesParser object
@@ -29,7 +29,7 @@ public class PropertiesParser {
      * Parses our internal file into a hashmap. Removes code comments and erroneous lines.
      *
      * @return A hashmap containing the key-value pairs in the properties file.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException if file cannot be opened to parse
      */
     public HashMap<String, String> parse() throws FileNotFoundException {
         HashMap<String, String> parsedFile = new HashMap<>();

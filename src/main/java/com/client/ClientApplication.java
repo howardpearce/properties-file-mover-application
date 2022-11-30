@@ -50,7 +50,6 @@ public class ClientApplication extends BaseApplication {
      * Constructor to read in service configuration
      *
      * @param configPath filepath to client configuration as String
-     * @throws IOException if configuration cannot be opened
      */
     public ClientApplication(String configPath) throws ConfigurationException {
         super(configPath, "client");
@@ -73,13 +72,8 @@ public class ClientApplication extends BaseApplication {
             Logger.logInfo("Read configuration sucessfully.");
 
             // inject resources into other classes
-            try {
-                clientApplication.initialize();
-                Logger.logInfo("Successfully initialized Client.");
-            } catch (IOException e) {
-                Logger.logError("Error occurred while initializing:" + e.getMessage());
-                shutdown(e);
-            }
+            clientApplication.initialize();
+            Logger.logInfo("Successfully initialized Client.");
 
             // primary run loop
             Logger.logInfo("Starting clientApplication...");
@@ -87,7 +81,6 @@ public class ClientApplication extends BaseApplication {
 
         } catch ( ConfigurationException e) {
             Logger.logError("Unable to read provided configuration file: " + e.getMessage());
-            return;
         }
     }
 
@@ -100,15 +93,13 @@ public class ClientApplication extends BaseApplication {
             m_directoryManager.watchForFileChanges();
         } catch (InterruptedException e) {
             Logger.logError("Application execution interrupted: " + e.getMessage());
-        } catch (IOException e) {
-            Logger.logError("IOException occurred while sending file: " + e.getMessage());
         }
     }
 
     /**
      * Initializes all resources required for ClientApplication to start
      */
-    public void initialize() throws IOException {
+    public void initialize() {
         try {
             this.initializeClientDirectoryManager();
             Logger.logInfo("Created clientDirectoryManager successfully");
@@ -124,9 +115,8 @@ public class ClientApplication extends BaseApplication {
      * Used by ClientDirectoryManager to send propertiesFile to server
      *
      * @param fileToSend file that will be sent to the server
-     * @throws IOException if send fails due to network error
      */
-    protected void sendPropertiesFileMessage(PropertiesFile fileToSend) throws IOException {
+    protected void sendPropertiesFileMessage(PropertiesFile fileToSend) {
         try {
             m_networkManager.sendPropertiesFile(fileToSend);
         } catch (IOException e) {
@@ -192,12 +182,13 @@ public class ClientApplication extends BaseApplication {
     }
 
     /**
-     * Method to be called when closing clientApplication. Should be called if normally or abnormally exiting.
+     * Method to be called when closing clientApplication. Should be called abnormally exiting.
      */
     public static void shutdown(Exception e) {
         if (e != null) {
             e.printStackTrace(System.out);
         }
         System.out.println("Shutting down.");
+        System.exit(1);
     }
 }

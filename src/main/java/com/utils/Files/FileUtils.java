@@ -33,6 +33,11 @@ public final class FileUtils {
         }
     }
 
+    public static boolean doesDirectoryExist(String directorypath) {
+        File directoryToCheck = new File(directorypath);
+        return (directoryToCheck.exists() && directoryToCheck.isDirectory() && directoryToCheck.canRead());
+    }
+
     /**
      * Returns it the provided file exists on the current filesystem
      *

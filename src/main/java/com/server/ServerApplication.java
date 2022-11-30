@@ -25,10 +25,6 @@ public class ServerApplication extends BaseApplication {
      */
     private ServerNetworkManager m_networkManager = null;
     /**
-     * Socket used for managing connection
-     */
-    private final ServerSocket m_serverSocket = null;
-    /**
      * How long server should wait before re-opening connection
      */
     private Integer m_retryPeriod = null;
@@ -42,14 +38,14 @@ public class ServerApplication extends BaseApplication {
      * Constructor to read in service configuration
      *
      * @param configPath filepath to server configuration as String
-     * @throws IOException if configuration cannot be opened
+     * @throws ConfigurationException if configuration cannot be opened
      */
     public ServerApplication(String configPath) throws ConfigurationException {
         super(configPath, "server");
     }
 
     /**
-     * @param args
+     * @param args user provided arguments
      */
     public static void main(String[] args) {
         // validate args before we start
@@ -64,7 +60,7 @@ public class ServerApplication extends BaseApplication {
             application.readConfiguration();
             application.initializeServerNetworkManager();
             application.run();
-        } catch (ConfigurationException | IOException e) {
+        } catch (ConfigurationException e) {
             System.out.println("Unable to open/read configuration file. Cannot start: " + e.getMessage());
         }
     }
@@ -111,10 +107,9 @@ public class ServerApplication extends BaseApplication {
     /**
      * Generate required resources to create a serverNetworkManager instance
      *
-     * @throws IOException if initialization fails
      */
-    public void initializeServerNetworkManager() throws IOException {
-        m_networkManager = new ServerNetworkManager(m_port, m_serverSocket, this, m_retryPeriod);
+    public void initializeServerNetworkManager() {
+        m_networkManager = new ServerNetworkManager(m_port, this, m_retryPeriod);
     }
 
     /**

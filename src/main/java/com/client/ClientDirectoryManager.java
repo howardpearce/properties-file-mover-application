@@ -23,23 +23,23 @@ public class ClientDirectoryManager {
     /**
      * Represents directory we plan to watch for file changes
      */
-    private WatchService m_watchService = null;
+    private final WatchService m_watchService;
     /**
      * Responds to file creation events within a directory
      */
-    private WatchKey m_watchKey = null;
+    private final WatchKey m_watchKey;
     /**
      * Reference to parent to callback when we are ready to send a file
      */
-    protected ClientApplication m_clientApplication = null;
+    protected ClientApplication m_clientApplication;
     /**
      * the directory we are watching
      */
-    private String m_directoryPath = null;
+    private final String m_directoryPath;
     /**
      * Regex key to filter on
      */
-    private BaseFilter m_filter = null;
+    private final BaseFilter m_filter;
 
     /**
      * Construct a ClientDirectoryManager to watch a single directory for changes
@@ -59,7 +59,7 @@ public class ClientDirectoryManager {
      *
      * @throws InterruptedException if interrupted while waiting for next event
      */
-    public void watchForFileChanges() throws InterruptedException, IOException {
+    public void watchForFileChanges() throws InterruptedException {
         WatchKey currentKey;
         while ((currentKey = m_watchService.take()) != null) {
             for (WatchEvent<?> event : m_watchKey.pollEvents()) {

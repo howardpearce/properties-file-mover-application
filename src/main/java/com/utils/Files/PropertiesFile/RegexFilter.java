@@ -16,7 +16,7 @@ public class RegexFilter extends BaseFilter {
     /**
      * Regular expression to apply on keys
      */
-    private String m_regex = null;
+    private final String m_regex;
 
     /**
      * Create an instance of this filter
@@ -36,7 +36,7 @@ public class RegexFilter extends BaseFilter {
         // iterate over all keys and only include those that match the provided regex
         fileToFilter.getContents().forEach((key, value) -> {
             // match against regex, allow comments still
-            if (((String) key).matches(m_regex)) {
+            if ((key).matches(m_regex)) {
                 filteredProperties.put(key, value);
             }
         });

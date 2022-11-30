@@ -54,7 +54,7 @@ public class PropertiesFile implements Serializable {
      *
      * @return String representation of properties file path location on system
      */
-    public String getfilepath() {
+    public String getFilepath() {
         return m_filepath;
     }
 
@@ -84,7 +84,7 @@ public class PropertiesFile implements Serializable {
         StringBuilder renderedFile = new StringBuilder();
         // iterate over properties and put one on each line
         m_contents.forEach((key, value) -> {
-            renderedFile.append((String) key + value + "\n");
+            renderedFile.append( key + value + "\n");
         });
         return renderedFile.toString();
     }

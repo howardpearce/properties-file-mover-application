@@ -16,19 +16,19 @@ public class ClientNetworkManager {
     /**
      * IP Address of the server we are communicating with
      */
-    private String m_serverAddress = null;
+    private final String m_serverAddress;
     /**
      * Port number of the server we are communicating with
      */
-    private Integer m_serverPort = null;
+    private final Integer m_serverPort;
     /**
      * Socket used for communications
      */
-    private Socket m_socket = null;
+    private final Socket m_socket;
     /**
      * Responsible for serializing PropertiesFile object and sending it over socket
      */
-    private ObjectOutputStream m_outputStream = null;
+    private final ObjectOutputStream m_outputStream;
 
     /**
      * Creates a ClientNetworkManager object
@@ -63,9 +63,8 @@ public class ClientNetworkManager {
      * @return A new socket with a connection to the server
      */
     public static Socket connectToServer(String serverAddress, Integer serverPort, Integer delay) {
-        boolean connected = false;
         int attempts = 1;
-        while (!connected) {
+        while (true) {
             try {
                 // attempt to connect to the server
                 return new Socket(serverAddress, serverPort);
@@ -80,6 +79,5 @@ public class ClientNetworkManager {
                 attempts++;
             }
         }
-        return null;
     }
 }

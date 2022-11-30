@@ -10,7 +10,6 @@ public abstract class BaseFilter {
      * Filter the provided PropertiesFile
      *
      * @param fileToFilter the file the filter will be applied on
-     * @return a new Properties object that has been filtered
      */
     public abstract void applyFilter(PropertiesFile fileToFilter);
 }

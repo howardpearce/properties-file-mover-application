@@ -17,15 +17,11 @@ public class ServerNetworkManager {
     /**
      * Port that we will listen on
      */
-    private Integer m_port = null;
+    private final Integer m_port;
     /**
      * Socket for receiving data
      */
     private ServerSocket m_serverSocket = null;
-    /**
-     * socket that holds the connection to the client
-     */
-    private Socket m_clientSocket = null;
     /**
      * Responsible for deserializing data
      */
@@ -33,23 +29,21 @@ public class ServerNetworkManager {
     /**
      * Callback reference to ServerApplication to call methods from
      */
-    private ServerApplication m_serverApplication = null;
+    private final ServerApplication m_serverApplication;
     /**
      * How long to wait before re-opening connection
      */
-    private Integer m_retryPeriod = null;
+    private final Integer m_retryPeriod;
 
 
     /**
      * Constructs a ServerNetworkManager via injected dependencies
      *
      * @param port              Port number to listen on
-     * @param serverSocket      Socket to receive data with
      * @param serverApplication callback reference to the serverapplication to handle message receive events
      */
-    public ServerNetworkManager(Integer port, ServerSocket serverSocket, ServerApplication serverApplication, Integer retryPeriod) {
+    public ServerNetworkManager(Integer port, ServerApplication serverApplication, Integer retryPeriod) {
         this.m_port = port;
-        this.m_serverSocket = serverSocket;
         this.m_serverApplication = serverApplication;
         this.m_retryPeriod = retryPeriod;
         waitForConnection();
@@ -64,9 +58,9 @@ public class ServerNetworkManager {
             try {
                 m_serverSocket = new ServerSocket(m_port);
                 Logger.logInfo("Waiting for a connection");
-                m_clientSocket = m_serverSocket.accept();
+                Socket clientSocket = m_serverSocket.accept();
                 Logger.logInfo("Got a connection!");
-                m_inputStream = new ObjectInputStream(m_clientSocket.getInputStream());
+                m_inputStream = new ObjectInputStream(clientSocket.getInputStream());
                 connected = true;
             } catch (IOException e) {
                 if (e.getMessage().contains("bind")) {
@@ -104,7 +98,6 @@ public class ServerNetworkManager {
      * Primary application logic occurs within, wait for messages from client and act on them.
      *
      * @throws IOException            if network error occurs receiving messages
-     * @throws ClassNotFoundException if deserialization into class fails
      */
     public void run() throws IOException {
         Logger.logInfo("Listening for messages...");

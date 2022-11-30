@@ -11,7 +11,7 @@ public class ConfigurationManager {
     /**
      * Contains all configuration, managed by this class
      */
-    Properties m_configuration = null;
+    Properties m_configuration;
 
     /**
      * Creates an instance of a ConfigurationManager

@@ -23,22 +23,21 @@ public abstract class BaseApplication implements Configurable {
     /**
      * Name of the application, either 'client' or 'server' currently.
      */
-    protected String m_applicationName = null;
+    protected String m_applicationName;
     /**
      * Retrieves configuration file.
      */
-    protected ConfigLoader m_configurationLoader = null;
+    protected ConfigLoader m_configurationLoader;
     /**
      * Wrapper for accessing configuration, parses and handles validity checking.
      */
-    protected ConfigurationManager m_configurationManager = null;
+    protected ConfigurationManager m_configurationManager;
 
     /**
      * Creates a Common.BaseApplication
      *
      * @param configPath A string representation of the configuration file location
      * @param name       The name of the application. Used in configuration.
-     * @throws IOException If configuration file is inaccessible
      */
     public BaseApplication(String configPath, String name) throws ConfigurationException {
         this.m_configurationLoader = new ConfigLoader(configPath);
@@ -77,7 +76,7 @@ public abstract class BaseApplication implements Configurable {
      */
     public void readConfiguration(ConfigurationManager configuration) throws ConfigurationException {
         m_directory = configuration.getConfigItemAsString(m_applicationName + ".directory");
-        if (!FileUtils.doesFileExist(m_directory)) {
+        if (!FileUtils.doesDirectoryExist(m_directory)) {
             throw new ConfigurationException("Provided watch directory '" + m_directory +  "' does not exist.");
         }
     }
