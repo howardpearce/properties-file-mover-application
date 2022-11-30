@@ -60,7 +60,7 @@ public final class FileUtils {
      */
     private static void validateFileIsReadable(String filepath) throws IOException {
         if (!isFileReadable(filepath)) {
-            throw new IOException("Unable to open filepath provided");
+            throw new IOException("Unable to open filepath provided: " + filepath);
         }
     }
 
