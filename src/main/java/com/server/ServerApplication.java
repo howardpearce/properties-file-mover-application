@@ -44,7 +44,7 @@ public class ServerApplication extends BaseApplication {
      * @param configPath filepath to server configuration as String
      * @throws IOException if configuration cannot be opened
      */
-    public ServerApplication(String configPath) throws IOException {
+    public ServerApplication(String configPath) throws ConfigurationException {
         super(configPath, "server");
     }
 
@@ -98,8 +98,8 @@ public class ServerApplication extends BaseApplication {
     public void writeFile(PropertiesFile file) {
         Logger.logInfo("Attempting to write file to disk.");
         try {
-            if (!FileUtils.doesFileExist(file.getfilepath())) {
-                FileUtils.createFile(m_directory + "\\" + file.getFileName(), file.renderAsFile());
+            if (!FileUtils.doesFileExist(m_directory + "/" + file.getFileName())) {
+                FileUtils.createFile(m_directory + "/" + file.getFileName(), file.renderAsFile());
             } else {
                 Logger.logError("File with that name already exists. Cannot write. ");
             }

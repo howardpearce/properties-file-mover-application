@@ -24,6 +24,21 @@ public final class FileUtils {
     private FileUtils() {
     }
 
+    public static String getFileExtension(String filename) {
+        int lastPeriodIndex = filename.lastIndexOf('.');
+        if (lastPeriodIndex > 0) {
+            return filename.substring(lastPeriodIndex+1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns it the provided file exists on the current filesystem
+     *
+     * @param filepath the filepath to check existence for
+     * @return true if file can be found on filesystem, false if not
+     */
     public static boolean doesFileExist(String filepath) {
         return isFileReadable(filepath);
     }

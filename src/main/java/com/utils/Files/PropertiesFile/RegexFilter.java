@@ -1,7 +1,11 @@
 package com.utils.Files.PropertiesFile;
 
+import com.utils.Config.ConfigurationException;
+
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Implementation of BaseFilter that applies a Regex filter on Properties Keys

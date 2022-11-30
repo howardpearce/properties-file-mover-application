@@ -11,5 +11,5 @@ public interface Configurable {
      *
      * @throws ConfigurationException if configuration cannot be read
      */
-    void readConfiguration() throws ConfigurationException;
+    void readConfiguration(ConfigurationManager manager) throws ConfigurationException;
 }

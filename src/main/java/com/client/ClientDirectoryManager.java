@@ -63,12 +63,19 @@ public class ClientDirectoryManager {
         WatchKey currentKey;
         while ((currentKey = m_watchService.take()) != null) {
             for (WatchEvent<?> event : m_watchKey.pollEvents()) {
-                Logger.logInfo("Observed new file: " + event.context());
-                // Give a little bit of time for the file to be released by other resources (fixes a bug where file is in use by another program)
-                Thread.sleep(100);
-                // create a PropertiesFile object for the new file
-                String path = m_directoryPath + "\\" + event.context().toString();
-                handleWatchEvent(path);
+                String newFileName = event.context().toString();
+                Logger.logInfo("Observed new file: " + newFileName);
+                String extension = FileUtils.getFileExtension(newFileName);
+                if (extension != null && extension.equals("properties")) {
+                    // Give a little bit of time for the file to be released by other resources (fixes a bug where file is in use by another program)
+                    Thread.sleep(100);
+                    // create a PropertiesFile object for the new file
+                    String path = m_directoryPath + "/" + event.context().toString();
+                    handleWatchEvent(path);
+                } else {
+                    Logger.logInfo("Ignoring file '" + newFileName + "' due to it not being a properties file.");
+                }
+
             }
             currentKey.reset();
         }
@@ -84,15 +91,13 @@ public class ClientDirectoryManager {
             // parse out the file
             PropertiesParser parser = new PropertiesParser(FileUtils.getFile(path));
             HashMap<String, String> fileContents = parser.parse();
-            for (String key : fileContents.keySet()) {
-                Logger.logDebug(key + ", " + fileContents.get(key));
-            }
             PropertiesFile eventFile = new PropertiesFile(fileContents, path);
             // filter out the keys that don't match regex
-            Logger.logDebug("filter");
             m_filter.applyFilter(eventFile);
-            for (String key : eventFile.getContents().keySet()) {
-                Logger.logDebug(key + ", " + fileContents.get(key));
+            // do not send or delete empty files
+            if(eventFile.getContents().size() == 0) {
+                Logger.logError("File is empty after filtering. Aborting send.");
+                return;
             }
             // send to server
             m_clientApplication.sendPropertiesFileMessage(eventFile);

@@ -72,11 +72,7 @@ public class PropertiesFile implements Serializable {
      */
     public String getFileName() {
         // check if path is delimited using '\' or '/'
-        if (m_filepath.lastIndexOf("\\") != -1) {
-            return m_filepath.substring(m_filepath.lastIndexOf("\\") + 1);
-        } else {
-            return m_filepath.substring(m_filepath.lastIndexOf("/") + 1);
-        }
+        return m_filepath.substring(m_filepath.lastIndexOf("/") + 1);
     }
 
     /**

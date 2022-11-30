@@ -1,6 +1,7 @@
 package com.utils;
 
 import com.client.ClientApplication;
+import com.utils.Files.FileUtils;
 import com.utils.Logger.Logger;
 import com.utils.Config.ConfigLoader;
 import com.utils.Config.Configurable;
@@ -39,9 +40,14 @@ public abstract class BaseApplication implements Configurable {
      * @param name       The name of the application. Used in configuration.
      * @throws IOException If configuration file is inaccessible
      */
-    public BaseApplication(String configPath, String name) throws IOException {
+    public BaseApplication(String configPath, String name) throws ConfigurationException {
         this.m_configurationLoader = new ConfigLoader(configPath);
-        this.m_configurationManager = m_configurationLoader.getConfiguration();
+        try {
+            this.m_configurationManager = m_configurationLoader.getConfiguration();
+        } catch (IOException e) {
+            Logger.logError("Unable to load provided configuration file '" + configPath + "'. Cannot proceed. ");
+            throw new ConfigurationException("Unable to load provided configuration file '" + configPath + "'");
+        }
         this.m_applicationName = name;
     }
 
@@ -71,25 +77,8 @@ public abstract class BaseApplication implements Configurable {
      */
     public void readConfiguration(ConfigurationManager configuration) throws ConfigurationException {
         m_directory = configuration.getConfigItemAsString(m_applicationName + ".directory");
-        Logger.logDebug("Loaded directory as " + m_directory);
-    }
-
-    /**
-     * Instantiates the application and applies full configuration (dependent on subclass overriding readConfiguration method)
-     *
-     * @param configPath String representation of the filepath for the application's configuration file
-     * @return new BaseApplication object, null if configuration fails
-     */
-    public static BaseApplication getConfiguredApplication(String configPath) {
-        try {
-            // TODO: Should not be client application
-            ClientApplication application = new ClientApplication(configPath);
-            application.readConfiguration();
-            Logger.logInfo("Read configuration sucessfully.");
-            return application;
-        } catch (IOException | ConfigurationException e) {
-            Logger.logError("Unable to read provided configuration: " + e.getMessage());
-            return null;
+        if (!FileUtils.doesFileExist(m_directory)) {
+            throw new ConfigurationException("Provided watch directory '" + m_directory +  "' does not exist.");
         }
     }
 }
