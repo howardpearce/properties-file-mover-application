@@ -24,6 +24,12 @@ public final class FileUtils {
     private FileUtils() {
     }
 
+    /**
+     * returns the file extension if one exists
+     *
+     * @param filename the filename to extract the filesystem from
+     * @return file extension as a string
+     */
     public static String getFileExtension(String filename) {
         int lastPeriodIndex = filename.lastIndexOf('.');
         if (lastPeriodIndex > 0) {
@@ -33,6 +39,12 @@ public final class FileUtils {
         }
     }
 
+    /**
+     * Does the current directory exist in the filesystem
+     *
+     * @param directorypath the path to the directory to check
+     * @return true if directory exists in filesystem, false if not
+     */
     public static boolean doesDirectoryExist(String directorypath) {
         File directoryToCheck = new File(directorypath);
         return (directoryToCheck.exists() && directoryToCheck.isDirectory() && directoryToCheck.canRead());

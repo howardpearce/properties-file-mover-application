@@ -45,7 +45,6 @@ public class ClientApplication extends BaseApplication {
      */
     private Integer m_connectionDelay = null;
 
-
     /**
      * Constructor to read in service configuration
      *
