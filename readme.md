@@ -12,3 +12,5 @@ You can try this project out by doing the following:
  3. Run the client and server using the following commands (assuming you're at project root):
 	- java -jar build/libs/client.jar config/client.properties
 	- java -jar build/libs/server.jar config/server.properties
+
+EDIT: Now supports multiple clients for one server.
