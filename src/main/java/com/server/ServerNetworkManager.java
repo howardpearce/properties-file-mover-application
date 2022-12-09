@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Manages network communications for the ServerApplication
@@ -17,15 +18,11 @@ public class ServerNetworkManager {
     /**
      * Port that we will listen on
      */
-    private final Integer m_port;
+    private Integer m_port;
     /**
      * Socket for receiving data
      */
     private ServerSocket m_serverSocket = null;
-    /**
-     * Responsible for deserializing data
-     */
-    private ObjectInputStream m_inputStream = null;
     /**
      * Callback reference to ServerApplication to call methods from
      */
@@ -35,6 +32,7 @@ public class ServerNetworkManager {
      */
     private final Integer m_retryPeriod;
 
+    private ServerConnectionManager m_connectionManager;
 
     /**
      * Constructs a ServerNetworkManager via injected dependencies
@@ -46,6 +44,7 @@ public class ServerNetworkManager {
         this.m_port = port;
         this.m_serverApplication = serverApplication;
         this.m_retryPeriod = retryPeriod;
+        this.m_connectionManager = new ServerConnectionManager(serverApplication);
         waitForConnection();
     }
 
@@ -53,15 +52,15 @@ public class ServerNetworkManager {
      * Open up sockets and wait for client to connect. Build inputStream once connection is made.
      */
     public void waitForConnection() {
-        boolean connected = false;
-        while (!connected) {
+        while (true) {
             try {
                 m_serverSocket = new ServerSocket(m_port);
-                Logger.logInfo("Waiting for a connection");
+                Logger.logInfo("Waiting for a connection on port " + m_port);
                 Socket clientSocket = m_serverSocket.accept();
                 Logger.logInfo("Got a connection!");
-                m_inputStream = new ObjectInputStream(clientSocket.getInputStream());
-                connected = true;
+                m_connectionManager.createNewConnection(clientSocket);
+                // close connection to allow a new one in
+                m_serverSocket.close();
             } catch (IOException e) {
                 if (e.getMessage().contains("bind")) {
                     Logger.logError("Port " + m_port + " is already in use. Do you have another server running?");
@@ -86,29 +85,9 @@ public class ServerNetworkManager {
             if (m_serverSocket != null) {
                 m_serverSocket.close();
             }
-            if (m_inputStream != null) {
-                m_inputStream.close();
-            }
+            m_connectionManager.closeAllConnections();
         } catch (IOException e) {
             Logger.logError("Error occurred while closing server connection: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Primary application logic occurs within, wait for messages from client and act on them.
-     *
-     * @throws IOException            if network error occurs receiving messages
-     */
-    public void run() throws IOException {
-        Logger.logInfo("Listening for messages...");
-        while (true) {
-            try {
-                PropertiesFile file = (PropertiesFile) m_inputStream.readObject();
-                System.out.println("Received message.");
-                m_serverApplication.writeFile(file);
-            } catch (ClassNotFoundException e) {
-                Logger.logError("Error occurred while reading client message. Skipping. Reason: " + e.getMessage());
-            }
         }
     }
 }

@@ -70,12 +70,7 @@ public class ServerApplication extends BaseApplication {
      */
     public void run() {
         while (true) {
-            try {
-                m_networkManager.run();
-            } catch (IOException e) {
-                Logger.logError("Connection with client has been lost. " + e.getMessage());
-                m_lostConnection = true;
-            }
+            m_networkManager.waitForConnection();
             if (m_lostConnection) {
                 m_networkManager.closeConnection();
                 Logger.logInfo("Re-opening connection.");
@@ -91,7 +86,7 @@ public class ServerApplication extends BaseApplication {
      *
      * @param file the PropertiesFile to write to disk
      */
-    public void writeFile(PropertiesFile file) {
+    public synchronized void writeFile(PropertiesFile file) {
         Logger.logInfo("Attempting to write file to disk.");
         try {
             if (!FileUtils.doesFileExist(m_directory + "/" + file.getFileName())) {
