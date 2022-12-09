@@ -1,6 +1,6 @@
 Small Java project consisting of a server and client program.
 
-Server monitors a directory for file changes. Reads in Java Properties files and filters the keys via regex. After filetering, it sends the file to the server and deletes its local copy.
+Server monitors a directory for file changes. Reads in Java Properties files and filters the keys via regex. After filtering, it sends the file to the server and deletes its local copy.
 
 The server receives and reconstructs the filtered files it receives from the client.
 
